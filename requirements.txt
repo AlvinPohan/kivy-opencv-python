@@ -1,0 +1,5 @@
+kivy
+kibymd
+# opencv-python
+# matplotlib
+# pyplot
