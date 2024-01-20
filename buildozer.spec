@@ -1,13 +1,13 @@
 [app]
 
 # (str) Title of your application
-title = My Application
+title = Open CV
 
 # (str) Package name
 package.name = opencvproject
 
 # (str) Package domain (needed for android/ios packaging)
-package.domain = org.opencv
+package.domain = org.test
 
 # (str) Source code where the main.py live
 source.dir = .
