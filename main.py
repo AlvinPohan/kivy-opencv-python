@@ -1725,11 +1725,14 @@ class ImagePopupContent(MDBoxLayout):
         
         box_layout.spacing = "10dp"
 
-        box_layout.add_widget(MDSmartTile(source=self.smart_tile, pos_hint={'center_x': 0.5, 'center_y': 0.8}, size_hint=(1, None), height="200dp"))
-        # box_layout.add_widget(MDSmartTile(source=self.smart_tile, pos_hint={'center_x': 0.5, 'center_y': 0.8}, size_hint=(1, None), height="200dp"))
-        self.blurred_image_widget.size_hint_y = None
-        self.blurred_image_widget.height = "200dp"  # Ganti dengan tinggi yang diinginkan
-        box_layout.add_widget(MDSmartTile(self.blurred_image_widget))
+        box_layout.add_widget(MDSmartTile(source=self.smart_tile, pos_hint={'center_x': 0.5, 'center_y': 0.6}, size_hint=(5, None), height="300dp"))
+        # box_layout.add_widget(MDSmartTile(source=self.smart_tile, pos_hint={'center_x': 0.5, 'center_y': 0.8}, size_hint=(1, None), height="300dp"))
+
+        if self.blurred_image_widget:
+            self.blurred_image_widget.size_hint = 5, None
+            self.blurred_image_widget.height = "300dp"  # Ganti dengan tinggi yang diinginkan
+            self.blurred_image_widget.pos_hint = {'center_x': 0.5, 'center_y': 0.6}
+            box_layout.add_widget(self.blurred_image_widget)
 
         self.add_widget(box_layout)
 
@@ -1757,13 +1760,16 @@ class ImagePopupContent(MDBoxLayout):
 
             image_gray = cv2.cvtColor(image_np, cv2.COLOR_BGR2GRAY)
 
-            blurred_image = cv2.GaussianBlur(image_gray, (15, 15), 0)
+            blurred_image = cv2.blur(image_np, (20, 20))
+
+            rotated_image = cv2.rotate(blurred_image, cv2.ROTATE_180)
+            flipped_image = cv2.flip(rotated_image, flipCode=1)
 
             # Konversi gambar kembali ke format Kivy
-            h, w = blurred_image.shape[:2]
-            buf = blurred_image.tobytes()
-            texture = Texture.create(size=(w, h), colorfmt='luminance')
-            texture.blit_buffer(buf , colorfmt='luminance', bufferfmt='ubyte')
+            h, w = flipped_image.shape[:2]
+            buf = flipped_image.tobytes()
+            texture = Texture.create(size=(w, h))
+            texture.blit_buffer(buf, bufferfmt='ubyte')
 
             # Perbarui gambar pada widget Image
             self.blurred_image_widget.texture = texture
