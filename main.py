@@ -1616,7 +1616,7 @@ class AnggrekScreen(Screen):
             content_cls=ImagePopupContent(image_source, size_hint=(None, None), size=("500dp", "450dp")),
             buttons=[
                 MDRaisedButton(
-                    text="Close1",
+                    text="Close",
                     on_release=lambda *args: dialog.dismiss(),
                     pos_hint={'center_x': 0.9, 'center_y': 0.5}
                 )
@@ -1742,11 +1742,11 @@ class ImagePopupContent(MDBoxLayout):
 
         blurring_button = MDRaisedButton(text="Blurring", on_release=self.on_blurring_button)
         edge_detection_button = MDRaisedButton(text="Edge Detection", on_release=self.on_edge_detection_button)
-        button3 = MDRaisedButton(text="Button 3", on_release=self.on_button3_click)
+        rotation_button = MDRaisedButton(text="Rotation", on_release=self.on_rotation_button)
 
         buttons_box.add_widget(blurring_button)
         buttons_box.add_widget(edge_detection_button)
-        buttons_box.add_widget(button3)
+        buttons_box.add_widget(rotation_button)
 
         self.add_widget(buttons_box)
 
@@ -1808,8 +1808,27 @@ class ImagePopupContent(MDBoxLayout):
 
             print("Edge Detection Clicked!")
 
-    def on_button3_click(self, *args):
-        print("Button 3 clicked!")
+    def on_rotation_button(self, *args):
+        if self.smart_tile:
+
+            # Mendapatkan sumber gambar dari objek MDSmartTile
+            image_source = self.smart_tile
+
+            # Memuat gambar menggunakan OpenCV
+            image_np = cv2.imread(image_source)
+
+            h, w = image_np.shape[:2]
+
+            rotation_matrix = cv2.getRotationMatrix2D((w/2, h/2), -180, 0.5)
+            rotation_image = cv2.warpAffine(image_np, rotation_matrix, (w,h))
+
+            plt.imshow(cv2.cvtColor(rotation_image, cv2.COLOR_BGR2RGB))
+            plt.title("Rotation")
+            plt.show()
+
+
+
+            print("Histogram clicked!")
 
 class MainApp(MDApp):
 
