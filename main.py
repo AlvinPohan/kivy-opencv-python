@@ -1765,7 +1765,7 @@ class ImagePopupContent(MDBoxLayout):
 
             image_gray = cv2.cvtColor(image_np, cv2.COLOR_BGR2GRAY)
 
-            blurred_image = cv2.blur(image_np, (20, 20))
+            blurred_image = cv2.blur(image_np, (15, 15), 0)
 
             rotated_image = cv2.rotate(blurred_image, cv2.ROTATE_180)
             flipped_image = cv2.flip(rotated_image, flipCode=1)
@@ -1773,8 +1773,8 @@ class ImagePopupContent(MDBoxLayout):
             # Konversi gambar kembali ke format Kivy
             h, w = flipped_image.shape[:2]
             buf = flipped_image.tobytes()
-            texture = Texture.create(size=(w, h))
-            texture.blit_buffer(buf, bufferfmt='ubyte')
+            texture = Texture.create(size=(w, h), colorfmt='bgr')
+            texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
 
             # Perbarui gambar pada widget Image
             self.blurred_image_widget.texture = texture
