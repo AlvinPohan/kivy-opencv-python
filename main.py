@@ -8,8 +8,6 @@ from kivy.lang.builder import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.imagelist import MDSmartTile
-# from kivymd.uix.gridlayout import MDGridLayout
-# from kivymd.uix.scrollview import MDScrollView
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDRaisedButton
 from kivy.uix.image import Image
