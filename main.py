@@ -1741,11 +1741,11 @@ class ImagePopupContent(MDBoxLayout):
         buttons_box = MDBoxLayout(orientation="horizontal", spacing=10, size_hint_y=None)
 
         blurring_button = MDRaisedButton(text="Blurring", on_release=self.on_blurring_button)
-        button2 = MDRaisedButton(text="Edge Detection", on_release=self.on_button2_click)
+        edge_detection_button = MDRaisedButton(text="Edge Detection", on_release=self.on_edge_detection_button)
         button3 = MDRaisedButton(text="Button 3", on_release=self.on_button3_click)
 
         buttons_box.add_widget(blurring_button)
-        buttons_box.add_widget(button2)
+        buttons_box.add_widget(edge_detection_button)
         buttons_box.add_widget(button3)
 
         self.add_widget(buttons_box)
@@ -1777,8 +1777,36 @@ class ImagePopupContent(MDBoxLayout):
 
             print("Blurring Clicked!")
 
-    def on_button2_click(self, *args):
-        print("Button 2 clicked!")
+    def on_edge_detection_button(self, *args):
+        if self.smart_tile:
+             # Mendapatkan sumber gambar dari objek MDSmartTile
+            image_source = self.smart_tile
+
+             # Memuat gambar menggunakan OpenCV
+            image_np = cv2.imread(image_source)
+
+            image_gray = cv2.cvtColor(image_np, cv2.COLOR_BGR2GRAY)
+
+            # menghilangkan noise
+            img = cv2.GaussianBlur(image_gray, (3,3), 0)
+
+            # konvolusi dengan matriks kernel
+            lapacian = cv2.Laplacian(img, cv2.CV_64F)
+            sobelx = cv2.Sobel(img, cv2.CV_64F,1,0,ksize=5)
+            sobely = cv2.Sobel(img, cv2.CV_64F,0,1,ksize=5)
+
+            plt.subplot(2,2,1),plt.imshow(img,cmap='gray')
+            plt.title('Original'),plt.xticks([]), plt.yticks([])
+            plt.subplot(2,2,2),plt.imshow(lapacian,cmap='gray')
+            plt.title('Laplacian'),plt.xticks([]), plt.yticks([])
+            plt.subplot(2,2,3),plt.imshow(sobelx,cmap='gray')
+            plt.title('Sobel X'),plt.xticks([]), plt.yticks([])
+            plt.subplot(2,2,4),plt.imshow(sobely,cmap='gray')
+            plt.title('Sobel Y'),plt.xticks([]), plt.yticks([])
+
+            plt.show()
+
+            print("Edge Detection Clicked!")
 
     def on_button3_click(self, *args):
         print("Button 3 clicked!")
