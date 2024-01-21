@@ -14,6 +14,7 @@ from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDRaisedButton
 from kivy.uix.image import Image
 from matplotlib import pyplot as plt
+from kivymd.uix.card import MDCard
 
 screen_helper = """
 
@@ -27,52 +28,107 @@ ScreenManager:
 
 <MenuScreen>:
     name: 'menu'
-    BoxLayout:
+    
+    Image:
+        source: 'datasets/Anggrek/anggrek_(1).jpg'  # Ganti dengan nama dan path gambar yang sesuai
+        allow_stretch: True
+        keep_ratio: False
+        color: (1, 1, 1, 0.5)  # Ubah nilai alpha untuk membuat gambar lebih gelap
+
+    MDBoxLayout:
         orientation: 'vertical'
-        size_hint: 1, 1
 
-        BoxLayout:
+        MDCard:
             orientation: 'vertical'
-            size_hint: 1, 1
-            height: dp(200)  # Atur ketinggian background sesuai kebutuhan
+            size_hint: None, None
+            size: "150dp", "60dp"
+            pos_hint: {"center_x": .5, "center_y": .5}
+            padding: "3dp"
 
-            canvas.before:
-                Color:
-                    rgba: 0.2, 0.2, 0.2, 1  # Warna background
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
+            MDLabel:
+                text: "OPENCV PROJECT"
+                font_style: "H5"
+                theme_text_color: "Secondary"
+                size_hint_y: None
+                height: self.texture_size[1]
+                halign: "center"
+                valign: "middle"
 
-            Label:
-                text: 'Gallery'
-                font_size: '36sp'
-                font_name: 'Roboto'
-                bold: True
-                color: 1, 1, 1, 1  # Warna teks title
-                size_hint: None, None
-                # size: self.texture_size
-                pos_hint: {'center_x':0.5,'center_y':0.6}
+        MDBoxLayout:
+            orientation: 'vertical'
+            spacing: '10dp'
+            padding: '10dp'
+            size_hint_y: None
+            height: self.minimum_height  # Tinggi dinamis untuk mengakomodasi elemen
+            pos_hint: {'center_x': 0.5, 'center_y': 0.1}  # Atur posisi ke tengah bawah layar
+            
+            MDBoxLayout:
+                orientation: 'vertical'
+                adaptive_height: True
 
-    MDRectangleFlatButton:
-        text: 'Anggrek'
-        on_press: root.manager.current = 'anggrek'
-        pos_hint: {'center_x':0.5,'center_y':0.6}
-    MDRectangleFlatButton:
-        text: 'Bunga'
-        on_press: root.manager.current = 'bunga'
-        pos_hint: {'center_x':0.5,'center_y':0.5}
-    MDRectangleFlatButton:
-        text: 'Daun Jeruk'
-        on_press: root.manager.current = 'daun_jeruk'
-        pos_hint: {'center_x':0.5,'center_y':0.4}
-    MDRectangleFlatButton:
-        text: 'Daun 1'
-        on_press: root.manager.current = 'daun_a'
-        pos_hint: {'center_x':0.5,'center_y':0.3}
-    MDRectangleFlatButton:
-        text: 'Daun 2'
-        on_press: root.manager.current = 'daun_b'
-        pos_hint: {'center_x':0.5,'center_y':0.2}
+                MDLabel:
+                    text: 'Choose a Media'
+                    font_size: '24sp'
+                    halign: 'center'
+                    theme_text_color: "Secondary"
+
+        MDBoxLayout:
+            orientation: 'vertical'
+            spacing: '10dp'
+            padding: '10dp'
+            size_hint_y: None
+            height: self.minimum_height  # Tinggi dinamis untuk mengakomodasi elemen
+            pos_hint: {'center_x': 0.5, 'center_y': 0.1}  # Atur posisi ke tengah bawah layar
+
+            MDGridLayout:
+                cols: 5
+                spacing: '45dp'
+                padding: '45dp'
+                size_hint_y: None
+                # size_hint_x: 1
+                height: self.minimum_height  # Tinggi dinamis untuk mengakomodasi elemen
+                pos_hint: {'center_x': 0.65, 'center_y': 0.5}
+
+                MDFloatingActionButton:
+                    on_press: root.manager.current = 'anggrek'
+                    md_bg_color: (0.2, 0.6, 0.4, 1)
+
+                    MDLabel:
+                        text: "Anggrek"
+                        halign: "center"
+
+                MDFloatingActionButton:
+                    on_press: root.manager.current = 'bunga'
+                    md_bg_color: (0.2, 0.4, 0.8, 1)
+
+                    MDLabel:
+                        text: "Bunga"
+                        halign: "center"
+
+                MDFloatingActionButton:
+                    on_press: root.manager.current = 'daun_jeruk'
+                    md_bg_color: (0.8, 0.4, 0.2, 1)
+
+                    MDLabel:
+                        text: "Daun Jeruk"
+                        halign: "center"
+
+                MDFloatingActionButton:
+                    on_press: root.manager.current = 'daun_a'
+                    md_bg_color: (0.8, 0.8, 0.2, 1)
+
+                    MDLabel:
+                        text: "Daun A"
+                        halign: "center"
+
+                MDFloatingActionButton:
+                    on_press: root.manager.current = 'daun_b'
+                    md_bg_color: (0.4, 0.2, 0.8, 1)
+
+                    MDLabel:
+                        text: "Daun B"
+                        halign: "center"
+
 
 <AnggrekScreen>:
     name: 'anggrek'
@@ -80,6 +136,12 @@ ScreenManager:
         orientation: 'vertical'
         # size_hint_y: None
         # height: dp(300)  # Set the desired height
+
+        MDRectangleFlatButton:
+            text: '<- Back'
+            pos_hint: {'center_x':0.1,'center_y':0.1}
+            on_press: root.manager.current = 'menu'
+
         MDScrollView
 
             MDGridLayout:
@@ -335,16 +397,17 @@ ScreenManager:
                     tile_text: 'Anggrek'
                     tile_font_style: 'Subtitle1'
                     on_release: root.show_popup(self.source)
-
-        MDRectangleFlatButton:
-            text: 'Back'
-            pos_hint: {'center_x':0.5,'center_y':0.1}
-            on_press: root.manager.current = 'menu'
     
 <BungaScreen>:
     name: 'bunga'
     MDBoxLayout:
         orientation: 'vertical'
+
+        MDRectangleFlatButton:
+            text: '<- Back'
+            pos_hint: {'center_x':0.1,'center_y':0.1}
+            on_press: root.manager.current = 'menu'
+
         MDScrollView
 
             MDGridLayout:
@@ -657,15 +720,16 @@ ScreenManager:
                     tile_font_style: 'Subtitle1'
                     on_release: root.show_popup(self.source)
 
-        MDRectangleFlatButton:
-            text: 'Back'
-            pos_hint: {'center_x':0.5,'center_y':0.1}
-            on_press: root.manager.current = 'menu'
-
 <DaunJerukScreen>:
     name: 'daun_jeruk'
     MDBoxLayout:
         orientation: 'vertical'
+
+        MDRectangleFlatButton:
+            text: '<- Back'
+            pos_hint: {'center_x':0.1,'center_y':0.1}
+            on_press: root.manager.current = 'menu'
+
         MDScrollView
 
             MDGridLayout:
@@ -946,15 +1010,16 @@ ScreenManager:
                     tile_font_style: 'Subtitle1'
                     on_release: root.show_popup(self.source)
 
-        MDRectangleFlatButton:
-            text: 'Back'
-            pos_hint: {'center_x':0.5,'center_y':0.1}
-            on_press: root.manager.current = 'menu'
-
 <DaunAScreen>:
     name: 'daun_a'
     MDBoxLayout:
         orientation: 'vertical'
+
+        MDRectangleFlatButton:
+            text: '<- Back'
+            pos_hint: {'center_x':0.1,'center_y':0.1}
+            on_press: root.manager.current = 'menu'
+        
         MDScrollView
 
             MDGridLayout:
@@ -1267,15 +1332,16 @@ ScreenManager:
                     tile_font_style: 'Subtitle1'
                     on_release: root.show_popup(self.source)
 
-        MDRectangleFlatButton:
-            text: 'Back'
-            pos_hint: {'center_x':0.5,'center_y':0.1}
-            on_press: root.manager.current = 'menu'
-
 <DaunBScreen>:
     name: 'daun_b'
     MDBoxLayout:
         orientation: 'vertical'
+
+        MDRectangleFlatButton:
+            text: '<- Back'
+            pos_hint: {'center_x':0.1,'center_y':0.1}
+            on_press: root.manager.current = 'menu'
+
         MDScrollView
 
             MDGridLayout:
@@ -1523,11 +1589,6 @@ ScreenManager:
                     tile_text: 'Daun B'
                     tile_font_style: 'Subtitle1'
                     on_release: root.show_popup(self.source)
-
-        MDRectangleFlatButton:
-            text: 'Back'
-            pos_hint: {'center_x':0.5,'center_y':0.1}
-            on_press: root.manager.current = 'menu'
 
 """
 

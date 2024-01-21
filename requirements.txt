@@ -1,6 +1,7 @@
 kivy
 kivymd
 matplotlib
+opencv-python
 
 # opencv-python
 # pyplot
