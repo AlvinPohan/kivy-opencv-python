@@ -1,4 +1,8 @@
 import os
+import cv2
+import numpy as np
+import uuid
+from kivy.graphics.texture import Texture
 from kivymd.app import MDApp
 from kivy.lang.builder import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
@@ -8,6 +12,8 @@ from kivymd.uix.imagelist import MDSmartTile
 # from kivymd.uix.scrollview import MDScrollView
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDRaisedButton
+from kivy.uix.image import Image
+from matplotlib import pyplot as plt
 
 screen_helper = """
 
@@ -1546,7 +1552,7 @@ class AnggrekScreen(Screen):
         dialog = MDDialog(
             title="Anggrek",
             type="custom",
-            content_cls=ImagePopupContent(image_source, size_hint=(None, None), size=("300dp", "300dp")),
+            content_cls=ImagePopupContent(image_source, size_hint=(None, None), size=("500dp", "450dp")),
             buttons=[
                 MDRaisedButton(
                     text="Close1",
@@ -1566,7 +1572,7 @@ class BungaScreen(Screen):
         dialog = MDDialog(
             title="Bunga",
             type="custom",
-            content_cls=ImagePopupContent(image_source, size_hint=(None, None), size=("300dp", "300dp")),
+            content_cls=ImagePopupContent(image_source, size_hint=(None, None), size=("500dp", "450dp")),
             buttons=[
                 MDRaisedButton(
                     text="Close1",
@@ -1586,7 +1592,7 @@ class DaunJerukScreen(Screen):
         dialog = MDDialog(
             title="Daun Jeruk",
             type="custom",
-            content_cls=ImagePopupContent(image_source, size_hint=(None, None), size=("300dp", "300dp")),
+            content_cls=ImagePopupContent(image_source, size_hint=(None, None), size=("500dp", "450dp")),
             buttons=[
                 MDRaisedButton(
                     text="Close1",
@@ -1606,7 +1612,7 @@ class DaunAScreen(Screen):
         dialog = MDDialog(
             title="Daun A",
             type="custom",
-            content_cls=ImagePopupContent(image_source, size_hint=(None, None), size=("300dp", "300dp")),
+            content_cls=ImagePopupContent(image_source, size_hint=(None, None), size=("500dp", "450dp")),
             buttons=[
                 MDRaisedButton(
                     text="Close1",
@@ -1626,7 +1632,7 @@ class DaunBScreen(Screen):
         dialog = MDDialog(
             title="Daun B",
             type="custom",
-            content_cls=ImagePopupContent(image_source, size_hint=(None, None), size=("300dp", "300dp")),
+            content_cls=ImagePopupContent(image_source, size_hint=(None, None), size=("500dp", "450dp")),
             buttons=[
                 MDRaisedButton(
                     text="Close1",
@@ -1648,26 +1654,61 @@ sm.add_widget(DaunBScreen(name='daun_b'))
 
 
 class ImagePopupContent(MDBoxLayout):
-    def __init__(self, image_source, **kwargs):
+    def __init__(self, smart_tile, **kwargs):
         super(ImagePopupContent, self).__init__(**kwargs)
         self.orientation = "vertical"
-        self.add_widget(MDSmartTile(source=image_source, pos_hint={'center_x': 0.5, 'center_y': 0.5}))
+        self.smart_tile = smart_tile
+        self.blurred_image_widget = Image()
+
+        box_layout = MDBoxLayout();
+        
+        box_layout.spacing = "10dp"
+
+        box_layout.add_widget(MDSmartTile(source=self.smart_tile, pos_hint={'center_x': 0.5, 'center_y': 0.8}, size_hint=(1, None), height="200dp"))
+        # box_layout.add_widget(MDSmartTile(source=self.smart_tile, pos_hint={'center_x': 0.5, 'center_y': 0.8}, size_hint=(1, None), height="200dp"))
+        self.blurred_image_widget.size_hint_y = None
+        self.blurred_image_widget.height = "200dp"  # Ganti dengan tinggi yang diinginkan
+        box_layout.add_widget(MDSmartTile(self.blurred_image_widget))
+
+        self.add_widget(box_layout)
+
 
         # Tambahkan tombol-tombol
-        buttons_box = MDBoxLayout(orientation="horizontal", spacing=10, size_hint_y=None, height="50dp")
+        buttons_box = MDBoxLayout(orientation="horizontal", spacing=10, size_hint_y=None)
 
-        button1 = MDRaisedButton(text="Button 1", on_release=self.on_button1_click)
-        button2 = MDRaisedButton(text="Button 2", on_release=self.on_button2_click)
+        blurring_button = MDRaisedButton(text="Blurring", on_release=self.on_blurring_button)
+        button2 = MDRaisedButton(text="Edge Detection", on_release=self.on_button2_click)
         button3 = MDRaisedButton(text="Button 3", on_release=self.on_button3_click)
 
-        buttons_box.add_widget(button1)
+        buttons_box.add_widget(blurring_button)
         buttons_box.add_widget(button2)
         buttons_box.add_widget(button3)
 
         self.add_widget(buttons_box)
 
-    def on_button1_click(self, *args):
-        print("Button 1 clicked!")
+    def on_blurring_button(self, *args):
+        if self.smart_tile:
+             # Mendapatkan sumber gambar dari objek MDSmartTile
+            image_source = self.smart_tile
+
+            # Memuat gambar menggunakan OpenCV
+            image_np = cv2.imread(image_source)
+
+            image_gray = cv2.cvtColor(image_np, cv2.COLOR_BGR2GRAY)
+
+            blurred_image = cv2.GaussianBlur(image_gray, (15, 15), 0)
+
+            # Konversi gambar kembali ke format Kivy
+            h, w = blurred_image.shape[:2]
+            buf = blurred_image.tobytes()
+            texture = Texture.create(size=(w, h), colorfmt='luminance')
+            texture.blit_buffer(buf , colorfmt='luminance', bufferfmt='ubyte')
+
+            # Perbarui gambar pada widget Image
+            self.blurred_image_widget.texture = texture
+            # self.blurred_image_widget.size = (w, h)  # Atur ukuran widget Image
+
+            print("Blurring Clicked!")
 
     def on_button2_click(self, *args):
         print("Button 2 clicked!")
