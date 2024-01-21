@@ -93,6 +93,7 @@ ScreenManager:
 
                     MDLabel:
                         text: "Anggrek"
+                        font_size: "13dp"
                         halign: "center"
 
                 MDFloatingActionButton:
@@ -100,7 +101,8 @@ ScreenManager:
                     md_bg_color: (0.2, 0.4, 0.8, 1)
 
                     MDLabel:
-                        text: "Bunga"
+                        text: "Bunga Anemone"
+                        font_size: "10dp"
                         halign: "center"
 
                 MDFloatingActionButton:
@@ -109,6 +111,7 @@ ScreenManager:
 
                     MDLabel:
                         text: "Daun Jeruk"
+                        font_size: "10dp"
                         halign: "center"
 
                 MDFloatingActionButton:
@@ -116,7 +119,8 @@ ScreenManager:
                     md_bg_color: (0.8, 0.8, 0.2, 1)
 
                     MDLabel:
-                        text: "Daun A"
+                        text: "Daun Cordyline"
+                        font_size: "10dp"
                         halign: "center"
 
                 MDFloatingActionButton:
@@ -124,7 +128,8 @@ ScreenManager:
                     md_bg_color: (0.4, 0.2, 0.8, 1)
 
                     MDLabel:
-                        text: "Daun B"
+                        text: "Daun Sanseviera"
+                        font_size: "10dp"
                         halign: "center"
 
 
@@ -1629,12 +1634,12 @@ class BungaScreen(Screen):
     
     def show_popup(self, image_source):
         dialog = MDDialog(
-            title="Bunga",
+            title="Bunga Anemone",
             type="custom",
             content_cls=ImagePopupContent(image_source, size_hint=(None, None), size=("500dp", "450dp")),
             buttons=[
                 MDRaisedButton(
-                    text="Close1",
+                    text="Close",
                     on_release=lambda *args: dialog.dismiss(),
                     pos_hint={'center_x': 0.9, 'center_y': 0.5}
                 )
@@ -1654,7 +1659,7 @@ class DaunJerukScreen(Screen):
             content_cls=ImagePopupContent(image_source, size_hint=(None, None), size=("500dp", "450dp")),
             buttons=[
                 MDRaisedButton(
-                    text="Close1",
+                    text="Close",
                     on_release=lambda *args: dialog.dismiss(),
                     pos_hint={'center_x': 0.9, 'center_y': 0.5}
                 )
@@ -1669,12 +1674,12 @@ class DaunAScreen(Screen):
     
     def show_popup(self, image_source):
         dialog = MDDialog(
-            title="Daun A",
+            title="Daun Cordyline",
             type="custom",
             content_cls=ImagePopupContent(image_source, size_hint=(None, None), size=("500dp", "450dp")),
             buttons=[
                 MDRaisedButton(
-                    text="Close1",
+                    text="Close",
                     on_release=lambda *args: dialog.dismiss(),
                     pos_hint={'center_x': 0.9, 'center_y': 0.5}
                 )
@@ -1689,12 +1694,12 @@ class DaunBScreen(Screen):
     
     def show_popup(self, image_source):
         dialog = MDDialog(
-            title="Daun B",
+            title="Daun Sanseviera",
             type="custom",
             content_cls=ImagePopupContent(image_source, size_hint=(None, None), size=("500dp", "450dp")),
             buttons=[
                 MDRaisedButton(
-                    text="Close1",
+                    text="Close",
                     on_release=lambda *args: dialog.dismiss(),
                     pos_hint={'center_x': 0.9, 'center_y': 0.5}
                 )
@@ -1758,7 +1763,7 @@ class ImagePopupContent(MDBoxLayout):
 
             image_gray = cv2.cvtColor(image_np, cv2.COLOR_BGR2GRAY)
 
-            blurred_image = cv2.blur(image_np, (20, 20))
+            blurred_image = cv2.blur(image_np, (15, 15), 0)
 
             rotated_image = cv2.rotate(blurred_image, cv2.ROTATE_180)
             flipped_image = cv2.flip(rotated_image, flipCode=1)
@@ -1766,8 +1771,8 @@ class ImagePopupContent(MDBoxLayout):
             # Konversi gambar kembali ke format Kivy
             h, w = flipped_image.shape[:2]
             buf = flipped_image.tobytes()
-            texture = Texture.create(size=(w, h))
-            texture.blit_buffer(buf, bufferfmt='ubyte')
+            texture = Texture.create(size=(w, h), colorfmt='bgr')
+            texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
 
             # Perbarui gambar pada widget Image
             self.blurred_image_widget.texture = texture
